@@ -18,7 +18,7 @@ class GraphSpec extends FlatSpec with Matchers {
     graph.edges.size shouldBe 0
   }
 
-  "A Graph initialized with no edges " should " expand itself when edges are introduced" in{
+  "A Graph initialized with no edges " should " expand itself when edges are introduced" in {
     val graph: Graph = Graph(Node("A"))
     graph.vertices().size shouldEqual 1
     val updatedGraph: Graph = graph.addEdge(Edge("B", "A"))
@@ -57,11 +57,9 @@ class GraphSpec extends FlatSpec with Matchers {
     graph1.hasCycle shouldBe false
   }
 
-  "A Graph " should "be able to determine the root node" in{
-    val dependencyGraph: Graph = Graph(Set[Edge](Edge("A", "B"), Edge("A", "D"), Edge("B", "C"),Edge("C", "E"), Edge("F", "D"), Edge("E", "D")))
+  "A Graph " should "be able to determine the root node" in {
+    val dependencyGraph: Graph = Graph(Set[Edge](Edge("A", "B"), Edge("A", "D"), Edge("B", "C"), Edge("C", "E"), Edge("F", "D"), Edge("E", "D")))
     dependencyGraph.centralNode shouldEqual Node("D")
   }
-
-
 
 }

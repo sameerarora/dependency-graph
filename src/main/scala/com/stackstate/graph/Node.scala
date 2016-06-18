@@ -1,5 +1,10 @@
 package com.stackstate.graph
 
-case class Node(label: String) {
+import com.stackstate.actor.FailureEvent
+
+case class Node(label: String, alerts: List[FailureEvent] = List[FailureEvent]()) {
   override def equals(obj: scala.Any): Boolean = obj.asInstanceOf[Node].label.equals(label)
+
+  def severityScore: Int = alerts.foldRight(0)((a, b) => a.severity + b)
+
 }

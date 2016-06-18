@@ -1,4 +1,4 @@
-name := "activator-akka-spray"
+name := "stackstate"
 
 version := "1.0"
 

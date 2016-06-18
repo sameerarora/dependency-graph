@@ -23,5 +23,4 @@ class MonitoringActorTest extends ActorTestBase(ActorSystem("test-tasker", Confi
       expectMsg(Alert(4))
     }
   }
-
 }

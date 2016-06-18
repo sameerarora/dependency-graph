@@ -5,7 +5,7 @@ case class Graph(edges: Set[Edge] = Set[Edge](), root: Option[Node] = None) {
   def hasCycle: Boolean = dfs()
 
   //Node that has all incoming dependencies and no outgoing dependencies
-  def centralNode: Node = vertices().filter(v => dependentsOf(v).isEmpty).head
+  lazy val centralNode: Node = vertices().filter(v => dependentsOf(v).isEmpty).head
 
   def dependenciesOf(node: Node): Set[Node] = {
     edges.filter(x => x.destination.equals(node)).map(e => e.source)
@@ -30,13 +30,12 @@ case class Graph(edges: Set[Edge] = Set[Edge](), root: Option[Node] = None) {
   def dfs(whiteSet: Set[Node] = vertices(), graySet: Set[Node] = empty, blackSet: Set[Node] = empty): Boolean = {
     whiteSet.toList match {
       case Nil => false
-      case head :: tail => {
+      case head :: tail =>
         dependentsOf(head).foreach(x => {
           if ((graySet + head).contains(x)) return true
           if (dfs(tail.toSet, graySet + head, blackSet)) return true
         })
         false
-      }
     }
   }
 

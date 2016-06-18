@@ -9,9 +9,13 @@ class NodeActorTest extends ActorTestBase(ActorSystem("test-tasker", ConfigFacto
   private val nodeActor: ActorRef = system.actorOf(Props(classOf[NodeActor], Node("A")))
 
   describe("A Node Actor") {
-    it("should respond to events") {
-      nodeActor ! "Ping"
-      expectMsg("Hello")
+    it("should respond to failure events") {
+      nodeActor ! Fatal
+      expectMsg("Acknowledged")
+      nodeActor ! Fatal
+      expectMsg("Acknowledged")
+      nodeActor ! HealthCheck
+      expectMsg(Alert(5, Option("Node is in critical condition, please take remedial actions")))
     }
   }
 
