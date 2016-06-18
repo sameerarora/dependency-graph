@@ -4,10 +4,6 @@ version := "1.0"
 
 scalaVersion := "2.10.2"
 
-resolvers += "spray repo" at "http://repo.spray.io"
-
-resolvers += "spray nightlies" at "http://nightlies.spray.io"
-
 libraryDependencies ++= Seq(
   "com.typesafe.akka"  %% "akka-actor"       % "2.2.0",
   "com.typesafe.akka"  %% "akka-slf4j"       % "2.2.0",
