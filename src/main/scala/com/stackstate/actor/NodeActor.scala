@@ -1,25 +1,23 @@
 package com.stackstate.actor
 
 import akka.actor.Actor
+import com.stackstate.event._
 import com.stackstate.graph.Node
 
 
-class NodeActor(var node: Node) extends Actor {
+class NodeActor(node: Node) extends Actor {
+
+  var severity: Int = 0
 
   override def receive: Receive = {
     case m: FailureEvent =>
-      node = Node(node.label, node.alerts :+ m)
-      sender ! "Acknowledged"
-    case HealthCheck => if (node.severityScore >= 10) {
-      sender ! Alert(5, Option("Node is in critical condition, please take remedial actions"))
-    }
+      severity += m.severity
+      if (severity >= 10) {
+        sender ! PropagationAlert(node, Warning)
+      }
+    case HealthCheck => if (severity >= 10) sender ! FailureAlert else sender ! Ok
+
+    case ResetEvent => severity = 0
   }
 }
 
-case class FailureEvent(severity: Int)
-
-object Major extends FailureEvent(3)
-
-object Critical extends FailureEvent(4)
-
-object Fatal extends FailureEvent(5)
