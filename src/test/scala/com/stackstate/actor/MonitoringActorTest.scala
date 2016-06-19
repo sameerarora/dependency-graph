@@ -3,9 +3,8 @@ package com.stackstate.actor
 import akka.actor.{ActorRef, ActorSystem, Props}
 import com.stackstate.event._
 import com.stackstate.graph.{Edge, Graph, Node}
-import com.typesafe.config.ConfigFactory
 
-class MonitoringActorTest extends ActorTestBase(ActorSystem("monitoring-graph", ConfigFactory.load("test.conf"))) {
+class MonitoringActorTest extends ActorTestBase(ActorSystem("monitoring-graph")) {
 
   private final val acknowledged = "Acknowledged"
 

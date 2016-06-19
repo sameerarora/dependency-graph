@@ -1,14 +1,13 @@
 package com.stackstate.actor
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import com.stackstate.config.CommonSettings._
 import com.stackstate.event._
 import com.stackstate.graph.{Graph, Node}
 
 case class MonitoringActor(dependencyGraph: Graph) extends Actor with ActorLogging {
 
   val nodeActors: Set[(Node, ActorRef)] = dependencyGraph.vertices().map(v => v -> context.system.actorOf(Props(classOf[NodeActor], v), v.label))
-
-  val threshold: Int = 15
 
   var severityScore: Int = 0
 
@@ -27,9 +26,10 @@ case class MonitoringActor(dependencyGraph: Graph) extends Actor with ActorLoggi
     case PropagationAlert(node: Node, event: FailureEvent) =>
       severityScore += event.severity * dependencyGraph.dependentsOf(node).size
       nodeActors.filter(p => dependencyGraph.dependentsOf(node).contains(p._1)).foreach(n => n._2 ! event)
+      sender ! Alert(4, Option(s"Node ${node.label} has gone into a failure state"))
 
     case HealthCheck =>
-      if (severityScore > threshold)
+      if (severityScore > graphThreshold)
         sender ! Alert(5, Option("System is found in a critical state, please take remedial action!!"))
       else sender ! Ok
 
