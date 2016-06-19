@@ -9,6 +9,8 @@ class MonitoringActorTest extends ActorTestBase(ActorSystem("monitoring-graph", 
 
   private final val acknowledged = "Acknowledged"
 
+  private val monitoringActor: ActorRef = system.actorOf(Props(classOf[MonitoringActor], Graph(Set[Edge](Edge("A", "B"), Edge("A", "D"), Edge("B", "C"), Edge("C", "D")))))
+
   describe("A Monitoring Actor") {
     it("should find out if monitored graph has any cycles in it") {
       val monitoringActor: ActorRef = system.actorOf(Props(classOf[MonitoringActor], Graph(Set[Edge](Edge("1", "2"), Edge("1", "4"), Edge("2", "3"), Edge("3", "4"), Edge("4", "2")))))
@@ -16,7 +18,6 @@ class MonitoringActorTest extends ActorTestBase(ActorSystem("monitoring-graph", 
       expectMsg(Alert(3, Some("Alert : Cycle(s) have been detected in the graph please review your dependencies")))
     }
 
-    val monitoringActor: ActorRef = system.actorOf(Props(classOf[MonitoringActor], Graph(Set[Edge](Edge("A", "B"), Edge("A", "D"), Edge("B", "C"), Edge("C", "D")))))
     it("responds to high memory usage event with high severity if node is an immediate dependency of central node ") {
 
       monitoringActor ! HighMemoryUsageEvent(Node("C"))
@@ -40,6 +41,8 @@ class MonitoringActorTest extends ActorTestBase(ActorSystem("monitoring-graph", 
       monitoringActor ! HealthCheck
       expectMsg(Ok)
       monitoringActor ! HighCpuConsumption(node)
+      expectMsg(acknowledged)
+      monitoringActor ! HighMemoryUsageEvent(node)
       expectMsg(acknowledged)
       monitoringActor ! HealthCheck
       expectMsg(Alert(5, Some("System is found in a critical state, please take remedial action!!")))
