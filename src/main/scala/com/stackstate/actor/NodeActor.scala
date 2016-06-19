@@ -12,9 +12,7 @@ class NodeActor(node: Node) extends Actor {
   override def receive: Receive = {
     case m: FailureEvent =>
       severity += m.severity
-      if (severity >= node.threshold) {
-        sender ! PropagationAlert(node, Warning)
-      }
+      if (severity >= node.threshold) sender ! PropagationAlert(node, Warning)
     case HealthCheck => if (severity >= node.threshold) sender ! FailureAlert else sender ! Ok
 
     case ResetEvent => severity = 0

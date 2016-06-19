@@ -33,7 +33,9 @@ case class MonitoringActor(dependencyGraph: Graph) extends Actor with ActorLoggi
         sender ! Alert(5, Option("System is found in a critical state, please take remedial action!!"))
       else sender ! Ok
 
-    case ResetEvent => nodeActors.foreach(x => x._2 ! ResetEvent)
+    case ResetEvent =>
+      nodeActors.foreach(x => x._2 ! ResetEvent)
+      severityScore = 0
 
     case _ => throw new IllegalArgumentException("I don't know how to respond to this message.")
 

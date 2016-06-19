@@ -46,6 +46,26 @@ class MonitoringActorTest extends ActorTestBase(ActorSystem("monitoring-graph"))
       monitoringActor ! HealthCheck
       expectMsg(Alert(5, Some("System is found in a critical state, please take remedial action!!")))
     }
+
+    it("should reset the monitor once failures are countered and system is restored"){
+      val node: Node = Node("C")
+      monitoringActor ! ResetEvent
+      expectNoMsg()
+      monitoringActor ! HighMemoryUsageEvent(node)
+      expectMsg(acknowledged)
+      monitoringActor ! DiskOutOfSpaceEvent(node)
+      expectMsg(acknowledged)
+      monitoringActor ! HighCpuConsumption(node)
+      expectMsg(acknowledged)
+      monitoringActor ! HighMemoryUsageEvent(node)
+      expectMsg(acknowledged)
+      monitoringActor ! HealthCheck
+      expectMsg(Alert(5, Some("System is found in a critical state, please take remedial action!!")))
+      monitoringActor ! ResetEvent
+      expectNoMsg()
+      monitoringActor ! HealthCheck
+      expectMsg(Ok)
+    }
   }
 
 }
