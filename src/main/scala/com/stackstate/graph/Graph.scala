@@ -2,10 +2,16 @@ package com.stackstate.graph
 
 case class Graph(edges: Set[Edge] = Set[Edge](), root: Option[Node] = None) {
 
+
+  def updateNode(node: Node) = {
+    Graph(edges.filter(e => !e.contains(node)) ++ edges.filter(e => e.contains(node)).map(e => e.update(node)))
+  }
+
+
   def hasCycle: Boolean = detectCycles()
 
   //Node that has all incoming dependencies and no outgoing dependencies
-  lazy val centralNode: Node = vertices().filter(v => dependentsOf(v).isEmpty).head
+  lazy val centralNode: Node = vertices().find(v => dependentsOf(v).isEmpty).get
 
   def dependenciesOf(node: Node): Set[Node] = {
     edges.filter(x => x.destination.equals(node)).map(e => e.source)
@@ -21,7 +27,7 @@ case class Graph(edges: Set[Edge] = Set[Edge](), root: Option[Node] = None) {
     edges.toList match {
       case Nil => root match {
         case Some(x) => Set[Node](x)
-        case None => nodes
+        case _ => nodes
       }
       case x :: xs => vertices(nodes ++ Set(x.source, x.destination), xs)
     }

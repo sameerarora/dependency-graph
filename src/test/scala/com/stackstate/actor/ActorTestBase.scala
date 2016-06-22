@@ -7,7 +7,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-abstract class ActorTestBase(_system: ActorSystem) extends TestKit(ActorSystem("graph-monitor", ConfigFactory.load("test.conf"))) with ImplicitSender with UnitTestBase {
+abstract class ActorTestBase(_system: ActorSystem) extends TestKit(ActorSystem("graph-monitor", ConfigFactory.load("application.conf"))) with ImplicitSender with UnitTestBase {
   def this() = this(ActorSystem())
 
   override def afterAll() {

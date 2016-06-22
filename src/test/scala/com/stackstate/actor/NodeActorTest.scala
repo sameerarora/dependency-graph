@@ -5,7 +5,7 @@ import com.stackstate.event._
 import com.stackstate.graph.Node
 import com.typesafe.config.ConfigFactory
 
-class NodeActorTest extends ActorTestBase(ActorSystem("test-tasker", ConfigFactory.load("test.conf"))) {
+class NodeActorTest extends ActorTestBase(ActorSystem("test-tasker", ConfigFactory.load("application.conf"))) {
 
   private val node: Node = Node("A")
 

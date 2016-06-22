@@ -1,5 +1,6 @@
 package com.stackstate.graph
 
+import com.stackstate.event.Alert
 import org.scalatest._
 
 class GraphSpec extends FlatSpec with Matchers {
@@ -50,6 +51,18 @@ class GraphSpec extends FlatSpec with Matchers {
 
   "A graph " should "be able to detect cycles" in {
     graph.hasCycle shouldBe true
+  }
+
+  "A Graph" should "be able update existing Node" in {
+    val node: Node = Node("A", 10, List[Alert](Alert(4)))
+    val updatedGraph: Graph = graph.updateNode(node)
+    val vertices: Set[Node] = updatedGraph.vertices()
+    vertices.size shouldEqual graph.vertices().size
+    graph.edges.size shouldEqual updatedGraph.edges.size
+    vertices.find(p => p.label.equals(node.label)) match {
+      case Some(x) => x.alerts.size shouldEqual 1
+      case None => throw new AssertionError(s"Expected Node ${node.label} found None")
+    }
   }
 
   "A Graph " should "be able to detect that there are no cycles" in {
